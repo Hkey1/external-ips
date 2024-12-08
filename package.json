@@ -8,9 +8,7 @@
     "author": "Andrey Belousoff <a.v.belousoff@gmail.com>",
     "license": "MIT",
     "description": "any IPs in HTTP(s) requests or WS",
-    "keywords": [
-        "ips", "ip",  
-    ],
+    "keywords": ["ips", "ip"],
     "dependencies": {
     },
     "engines": {
