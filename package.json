@@ -1,0 +1,29 @@
+{
+    "name": "external-ips",
+    "version": "0.0.1",
+    "main": "./index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Andrey Belousoff <a.v.belousoff@gmail.com>",
+    "license": "MIT",
+    "description": "any IPs in HTTP(s) requests or WS",
+    "keywords": [
+        "ips", "ip",  
+    ],
+    "dependencies": {
+    },
+    "engines": {
+        "node": ">=0.1.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Hkey1/extended-promise"
+    },
+    "readme":"External IPs",
+    "readmeFilename": "README.md",
+    "bugs": {
+        "url": "https://github.com/Hkey1/extended-promise/issues"
+    },
+    "homepage": "https://github.com/Hkey1/extended-promise"
+}
