@@ -148,10 +148,13 @@ const mainList = new MainList();
 Object.values(os.networkInterfaces()).forEach(arr=>{
 	mainList.push(...arr.filter(ip=>!ip.internal).map(ip=>new IP(ip)))
 });
-mainList.print();
+
+//mainList.print();
 
 mainList.MainList       = MainList;
 mainList.IP             = IP;
 mainList.AbstractObject = AbstractObject;
 mainList.FamilyList     = FamilyList;
 
+
+module.exports = mainList;
