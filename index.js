@@ -28,7 +28,7 @@ class AbstractObject {
 			if(!family || !this.family || this.family===family){
 				options.localAddress ||= this.next().address;
 			}
-			return old.call(this.agent, options, callback);
+			return old.call(agent, options, callback);
 		}
 	}
 	checkFamily(family){
@@ -90,7 +90,7 @@ class FamilyList extends AbstractObject{
 		return this[Math.floor(this.length*Math.random())]
 	}
 	__next(){
-		const res      = this[this.lastIndex];
+		const res      = this.ips[this.lastIndex];
 		this.lastIndex = (this.lastIndex+1)%this.length;
 		return res;
 	}
