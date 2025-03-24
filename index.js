@@ -22,11 +22,16 @@ class AbstractObject {
 		defaultFamily = normalizeFamily(defaultFamily);
 		assert.equal(typeof agent,                  'object');
 		assert.equal(typeof agent.createConnection, 'function');
-		const old = agent.createConnection;
+		const old  = agent.createConnection;
+		const self = this;
 		agent.createConnection = (options, callback)=>{
-			const family = normalizeFamily(options.family) || defaultFamily;
-			if(!family || !this.family || this.family===family){
-				options.localAddress ||= this.next().address;
+			const family = options.family ? normalizeFamily(options.family)||defaultFamily : defaultFamily;
+			if((!family || !self.family || self.family===family) && !options.localAddress){
+				const ip = self.random();
+				if(ip){
+					//console.log('++++++', ip, ip.address);
+					options.localAddress = ip.address ? ip.address : ip;
+				} //else console.log('++++++---', ip);
 			}
 			return old.call(agent, options, callback);
 		}
@@ -37,10 +42,16 @@ class AbstractObject {
 		return family;
 	}
 	random(family){
-		return this._random(family).address; 
+		const ip = this._random(family);
+		if(ip){
+			return ip.address; 
+		} //else console.log('!!!!!!!ip.rnd', this.constructor.name, this.length)
 	}
 	next(family){
-		return this._next(family).address; 
+		const ip = this._next(family);
+		if(ip){
+			return ip.address; 
+		} //else console.log('!!!!!!!ip.nxt', this.constructor.name, this.length)
 	}
 	_random(family){
 		return this.__random(this.checkFamily(family)) 
@@ -65,15 +76,18 @@ class IP extends AbstractObject{
 	__next(){return this}	
 };
 
+fid = 0
 class FamilyList extends AbstractObject{
-	ips = [];
+	ips       = [];
+	lastIndex = 0; 
 	constructor(family){
 		super(family);
-		Object.defineProperty(this, 'lastIndex', {
-			value: 0,
-			enumerable: false,
-			writable  : true,
-		})
+		this.fid = fid++; 
+		//Object.defineProperty(this, 'lastIndex', {
+		//	value: 0,
+		//	enumerable: false,
+		//	writable  : true,
+		//})
 	}
 	push(...ips){
 		ips.forEach(ip=>{
@@ -87,7 +101,11 @@ class FamilyList extends AbstractObject{
 		return this.ips.length;
 	}
 	__random(){
-		return this[Math.floor(this.length*Math.random())]
+		const pos = Math.floor(this.length*Math.random());
+		const res = this.ips[pos]; 
+		//console.log(this.ips);
+		//console.log('__random', 'length='+this.length, 'pos='+pos, res)
+		return res;
 	}
 	__next(){
 		const res      = this.ips[this.lastIndex];
@@ -149,12 +167,13 @@ Object.values(os.networkInterfaces()).forEach(arr=>{
 	mainList.push(...arr.filter(ip=>!ip.internal).map(ip=>new IP(ip)))
 });
 
+//console.log('--------------')
 //mainList.print();
+//console.log('/--------------')
 
 mainList.MainList       = MainList;
 mainList.IP             = IP;
 mainList.AbstractObject = AbstractObject;
 mainList.FamilyList     = FamilyList;
-
 
 module.exports = mainList;
