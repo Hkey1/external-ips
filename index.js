@@ -10,7 +10,6 @@ function normalizeFamily(family){
 		return false;
 	} else throw new Error('bad family='+family);
 }
-
 class AbstractObject {
 	constructor(family){
 		assert(this.constructor!==AbstractObject); //Abstract
@@ -29,9 +28,8 @@ class AbstractObject {
 			if((!family || !self.family || self.family===family) && !options.localAddress){
 				const ip = self.random();
 				if(ip){
-					//console.log('++++++', ip, ip.address);
 					options.localAddress = ip.address ? ip.address : ip;
-				} //else console.log('++++++---', ip);
+				}
 			}
 			return old.call(agent, options, callback);
 		}
