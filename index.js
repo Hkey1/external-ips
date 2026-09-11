@@ -28,7 +28,14 @@ class AbstractObject {
 			if((!family || !self.family || self.family===family) && !options.localAddress){
 				const ip = self.random();
 				if(ip){
-					options.localAddress = ip.address ? ip.address : ip;
+					//КОПИЯ, а не мутация. Agent уже вычислил ключ реестра (getName БЕЗ localAddress)
+					//и замкнул этот же объект options в свои слушатели. Если дописать localAddress
+					//в него, removeSocket/onFree пересчитают имя уже С адресом и попадут в другой
+					//список: закрытые сокеты никогда не удаляются из agent.sockets (на боевом
+					//mexc-гейтвее агент накопил 7744 сокета, из них 5578 мёртвых, ~1.5 ГБ/ч), а
+					//freeSockets кладутся под ключ, по которому их никто не ищет — keep-alive не
+					//переиспользуется вовсе, и каждый запрос открывает новый TLS.
+					return old.call(agent, { ...options, localAddress: ip.address ? ip.address : ip }, callback);
 				}
 			}
 			return old.call(agent, options, callback);
